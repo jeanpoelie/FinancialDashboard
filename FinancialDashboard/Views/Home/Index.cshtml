@@ -45,7 +45,7 @@
             <div class="card mb-4">
                 <!-- Card header -->
                 <div class="card-header text-center">
-                    Pie chart
+                    Outgoing per category (Pie chart)
                 </div>
                 <!--Card content-->
                 <div class="card-body">
@@ -100,6 +100,10 @@
         <div class="col-lg-6 col-md-9 mb-4">
             <!--Card-->
             <div class="card">
+                <!-- Card header -->
+                <div class="card-header text-center">
+                    Spendings per month
+                </div>
                 <!--Card content-->
                 <div class="card-body">
                     <canvas id="myChart"></canvas>
@@ -114,7 +118,7 @@
             <!--Card-->
             <div class="card">
                 <!-- Card header -->
-                <div class="card-header">Radar Chart</div>
+                <div class="card-header">Outgoing per category (Radar)</div>
                 <!--Card content-->
                 <div class="card-body">
                     <canvas id="radarChart"></canvas>
@@ -135,10 +139,10 @@
     var myChart = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+        labels: JSON.parse('@Html.Raw(Json.Encode(Model.FinancialBarChartModel.Labels))'),
         datasets: [{
-          label: '# of Votes',
-          data: [12, 19, 3, 5, 2, 3],
+          label: 'Amount per month per category',
+          data: JSON.parse('@Html.Raw(Json.Encode(Model.FinancialBarChartModel.Amounts))'),
           backgroundColor: [
             'rgba(255, 99, 132, 0.2)',
             'rgba(54, 162, 235, 0.2)',
@@ -166,24 +170,6 @@
             }
           }]
         }
-      }
-    });
-
-    //pie
-    var ctxP = document.getElementById("pieChart").getContext('2d');
-    var myPieChart = new Chart(ctxP, {
-      type: 'pie',
-      data: {
-        labels: ["Red", "Green", "Yellow", "Grey", "Dark Grey"],
-        datasets: [{
-          data: [300, 50, 100, 40, 120],
-          backgroundColor: ["#F7464A", "#46BFBD", "#FDB45C", "#949FB1", "#4D5360"],
-          hoverBackgroundColor: ["#FF5A5E", "#5AD3D1", "#FFC870", "#A8B3C5", "#616774"]
-        }]
-      },
-      options: {
-        responsive: true,
-        legend: false
       }
     });
         
@@ -220,32 +206,40 @@
         responsive: true
       }
     });
+        
 
+    //pie
+    var ctxP = document.getElementById("pieChart").getContext('2d');
+    var myPieChart = new Chart(ctxP, {
+        type: 'pie',
+        data: {
+            labels: JSON.parse('@Html.Raw(Json.Encode(Model.FinancialOutgoingModel.Labels))'),
+            datasets: [{
+                data: JSON.parse('@Html.Raw(Json.Encode(Model.FinancialOutgoingModel.Amounts))'),
+                backgroundColor: ["#F7464A", "#46BFBD", "#FDB45C", "#949FB1", "#4D5360"],
+                hoverBackgroundColor: ["#FF5A5E", "#5AD3D1", "#FFC870", "#A8B3C5", "#616774"]
+            }]
+        },
+        options: {
+            responsive: true,
+            legend: false
+        }
+    });
 
     //radar
     var ctxR = document.getElementById("radarChart").getContext('2d');
     var myRadarChart = new Chart(ctxR, {
       type: 'radar',
       data: {
-        labels: ["Eating", "Drinking", "Sleeping", "Designing", "Coding", "Cycling", "Running"],
+        labels: JSON.parse('@Html.Raw(Json.Encode(Model.RadarChartModel.Labels))'),
         datasets: [{
-          label: "My First dataset",
-          data: [65, 59, 90, 81, 56, 55, 40],
+          label: "Spendings by category",
+          data: JSON.parse('@Html.Raw(Json.Encode(Model.RadarChartModel.Amounts))'),
           backgroundColor: [
             'rgba(105, 0, 132, .2)',
           ],
           borderColor: [
             'rgba(200, 99, 132, .7)',
-          ],
-          borderWidth: 2
-        }, {
-          label: "My Second dataset",
-          data: [28, 48, 40, 19, 96, 27, 100],
-          backgroundColor: [
-            'rgba(0, 250, 220, .2)',
-          ],
-          borderColor: [
-            'rgba(0, 213, 132, .7)',
           ],
           borderWidth: 2
         }]

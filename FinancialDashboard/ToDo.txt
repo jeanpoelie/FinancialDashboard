@@ -1,0 +1,2 @@
+﻿- Add background color to categories in database
+- Add border color to categories in database

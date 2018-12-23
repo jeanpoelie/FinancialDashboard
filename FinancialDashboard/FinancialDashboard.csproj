@@ -154,6 +154,7 @@
       <DependentUpon>Payments.tt</DependentUpon>
     </Compile>
     <Compile Include="Controllers\bank_paymentsController.cs" />
+    <Compile Include="Controllers\FinancialBusinessRules.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -281,6 +282,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="SQL\SQL_Create_DB.txt" />
+    <Content Include="ToDo.txt" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

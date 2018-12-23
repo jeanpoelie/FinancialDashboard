@@ -11,49 +11,25 @@ namespace FinancialDashboard.Controllers
     public class HomeController : Controller
     {
         private test_paymentsEntities db = new test_paymentsEntities();
+        private FinancialBusinessRules fbr = new FinancialBusinessRules();
 
         public ActionResult Index()
         {
             var model = new FinancialModel();
             var payments = db.bank_payments.ToList();
-            
-            var unique_payment_dates = payments.Select(p => p.Datum).Distinct().OrderBy(p => p).ToList();
-            var unique_payment_date_strings = new List<string>();
-            var positivePayments = new List<decimal>();
-            var negativePayments = new List<decimal>();
-            foreach (var unique_payment_date in unique_payment_dates)
-            {
-                DateTime dtm = new DateTime();
-                if (unique_payment_date != null)
-                {
-                    dtm = (DateTime) unique_payment_date;
-                }
 
-                unique_payment_date_strings.Add(dtm.ToLongDateString());
+            // Calculate the line chart values
+            model.FinancialLineChartModel = fbr.CreateFinancialLineChartModel(payments);
 
-                positivePayments.Add(
-                    payments
-                        .Where(p => p.Af_Bij == "Bij" && 
-                                    p.Datum == unique_payment_date)
-                        .Select(p => p.Bedrag_EUR) 
-                        .Sum());
+            // Calculate the bar chart values
+            model.FinancialBarChartModel = fbr.CreateFinancialBarChartModel(payments);
 
-                negativePayments.Add(
-                    payments
-                        .Where(p => p.Af_Bij == "Af" &&
-                                    p.Datum == unique_payment_date)
-                        .Select(p => p.Bedrag_EUR)
-                        .Sum());
-            }
-            
-            
-            model.FinancialLineChartModel = new FinancialLineChartModel
-            {
-                Labels = unique_payment_date_strings,
-                PositivePayments = positivePayments,
-                NegativePayments = negativePayments
-            };
-            
+            // Calculate the outgoing values
+            model.FinancialOutgoingModel = fbr.CreateFinancialOutgoingModel(payments);
+
+            // Calculate the radar chart values
+            model.RadarChartModel = fbr.CreateRadarChartModel(payments);
+
             return View(model);
         }
 
