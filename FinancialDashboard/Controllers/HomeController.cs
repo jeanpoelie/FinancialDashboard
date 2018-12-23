@@ -35,7 +35,7 @@ namespace FinancialDashboard.Controllers
                     payments
                         .Where(p => p.Af_Bij == "Bij" && 
                                     p.Datum == unique_payment_date)
-                        .Select(p => p.Bedrag_EUR)
+                        .Select(p => p.Bedrag_EUR) 
                         .Sum());
 
                 negativePayments.Add(
