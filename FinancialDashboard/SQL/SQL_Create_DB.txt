@@ -1,0 +1,62 @@
+﻿USE [test_payments]
+GO
+
+/****** Object:  Table [dbo].[bank_categories]    Script Date: 12/23/2018 2:01:47 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[bank_categories](
+	[bank_category_Id] [int] IDENTITY(1,1) NOT NULL,
+	[bank_category_name] [varchar](50) NOT NULL,
+ CONSTRAINT [PK_bank_categories] PRIMARY KEY CLUSTERED 
+(
+	[bank_category_Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+
+USE [test_payments]
+GO
+
+/****** Object:  Table [dbo].[bank_payments]    Script Date: 12/23/2018 2:01:55 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[bank_payments](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Datum_txt] [varchar](255) NOT NULL,
+	[Naam_Omschrijving] [varchar](1000) NOT NULL,
+	[Rekening] [varchar](255) NOT NULL,
+	[Tegenrekening] [varchar](255) NOT NULL,
+	[Code] [varchar](255) NOT NULL,
+	[Af_Bij] [nvarchar](50) NOT NULL,
+	[Bedrag_EUR] [decimal](10, 2) NOT NULL,
+	[MutatieSoort] [varchar](255) NOT NULL,
+	[Mededelingen] [varchar](1000) NOT NULL,
+	[Datum] [date] NULL,
+	[Category_Id] [int] NULL,
+ CONSTRAINT [PK_bank_payments] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[bank_payments]  WITH CHECK ADD  CONSTRAINT [FK_bank_payments_bank_categories] FOREIGN KEY([Category_Id])
+REFERENCES [dbo].[bank_categories] ([bank_category_Id])
+GO
+
+ALTER TABLE [dbo].[bank_payments] CHECK CONSTRAINT [FK_bank_payments_bank_categories]
+GO
+
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Table full of all payments that happened since day 1' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'bank_payments'
+GO
+
+

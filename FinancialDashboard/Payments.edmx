@@ -4,7 +4,14 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="test_paymentsModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="test_paymentsModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="bank_categories">
+          <Key>
+            <PropertyRef Name="bank_category_Id" />
+          </Key>
+          <Property Name="bank_category_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="bank_category_name" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
         <EntityType Name="bank_payments">
           <Key>
             <PropertyRef Name="Id" />
@@ -20,12 +27,29 @@
           <Property Name="MutatieSoort" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="Mededelingen" Type="varchar" MaxLength="1000" Nullable="false" />
           <Property Name="Datum" Type="date" />
+          <Property Name="Category_Id" Type="int" />
         </EntityType>
+        <Association Name="FK_bank_payments_bank_categories">
+          <End Role="bank_categories" Type="Self.bank_categories" Multiplicity="0..1" />
+          <End Role="bank_payments" Type="Self.bank_payments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bank_categories">
+              <PropertyRef Name="bank_category_Id" />
+            </Principal>
+            <Dependent Role="bank_payments">
+              <PropertyRef Name="Category_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="test_paymentsModelStoreContainer">
+          <EntitySet Name="bank_categories" EntityType="Self.bank_categories" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="bank_payments" EntityType="Self.bank_payments" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_bank_payments_bank_categories" Association="Self.FK_bank_payments_bank_categories">
+            <End Role="bank_categories" EntitySet="bank_categories" />
+            <End Role="bank_payments" EntitySet="bank_payments" />
+          </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="test_paymentsModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -44,10 +68,37 @@
           <Property Name="MutatieSoort" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Mededelingen" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Datum" Type="DateTime" Precision="0" />
+          <Property Name="Category_Id" Type="Int32" />
+          <NavigationProperty Name="bank_categories" Relationship="test_paymentsModel.FK_bank_payments_bank_categories" FromRole="bank_payments" ToRole="bank_categories" />
         </EntityType>
         <EntityContainer Name="test_paymentsEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="bank_payments" EntityType="Self.bank_payments" />
+          <EntitySet Name="bank_categories" EntityType="test_paymentsModel.bank_categories" />
+          <AssociationSet Name="FK_bank_payments_bank_categories" Association="test_paymentsModel.FK_bank_payments_bank_categories">
+            <End Role="bank_categories" EntitySet="bank_categories" />
+            <End Role="bank_payments" EntitySet="bank_payments" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="bank_categories">
+          <Key>
+            <PropertyRef Name="bank_category_Id" />
+          </Key>
+          <Property Name="bank_category_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="bank_category_name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="bank_payments" Relationship="test_paymentsModel.FK_bank_payments_bank_categories" FromRole="bank_categories" ToRole="bank_payments" />
+        </EntityType>
+        <Association Name="FK_bank_payments_bank_categories">
+          <End Type="test_paymentsModel.bank_categories" Role="bank_categories" Multiplicity="0..1" />
+          <End Type="test_paymentsModel.bank_payments" Role="bank_payments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bank_categories">
+              <PropertyRef Name="bank_category_Id" />
+            </Principal>
+            <Dependent Role="bank_payments">
+              <PropertyRef Name="Category_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -57,6 +108,7 @@
           <EntitySetMapping Name="bank_payments">
             <EntityTypeMapping TypeName="test_paymentsModel.bank_payments">
               <MappingFragment StoreEntitySet="bank_payments">
+                <ScalarProperty Name="Category_Id" ColumnName="Category_Id" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Datum_txt" ColumnName="Datum_txt" />
                 <ScalarProperty Name="Naam_Omschrijving" ColumnName="Naam_Omschrijving" />
@@ -68,6 +120,14 @@
                 <ScalarProperty Name="MutatieSoort" ColumnName="MutatieSoort" />
                 <ScalarProperty Name="Mededelingen" ColumnName="Mededelingen" />
                 <ScalarProperty Name="Datum" ColumnName="Datum" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="bank_categories">
+            <EntityTypeMapping TypeName="test_paymentsModel.bank_categories">
+              <MappingFragment StoreEntitySet="bank_categories">
+                <ScalarProperty Name="bank_category_name" ColumnName="bank_category_name" />
+                <ScalarProperty Name="bank_category_Id" ColumnName="bank_category_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -26,5 +26,6 @@ namespace FinancialDashboard
         }
     
         public virtual DbSet<bank_payments> bank_payments { get; set; }
+        public virtual DbSet<bank_categories> bank_categories { get; set; }
     }
 }

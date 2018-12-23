@@ -25,5 +25,8 @@ namespace FinancialDashboard
         public string MutatieSoort { get; set; }
         public string Mededelingen { get; set; }
         public Nullable<System.DateTime> Datum { get; set; }
+        public Nullable<int> Category_Id { get; set; }
+    
+        public virtual bank_categories bank_categories { get; set; }
     }
 }

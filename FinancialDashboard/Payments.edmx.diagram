@@ -6,6 +6,8 @@
     <edmx:Diagrams>
       <Diagram DiagramId="2b8875ace3f943988075ad829055897e" Name="Diagram1">
         <EntityTypeShape EntityType="test_paymentsModel.bank_payments" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="test_paymentsModel.bank_categories" Width="1.5" PointX="0.75" PointY="5.75" />
+        <AssociationConnector Association="test_paymentsModel.FK_bank_payments_bank_categories" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
